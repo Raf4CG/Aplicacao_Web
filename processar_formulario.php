@@ -34,20 +34,43 @@
             echo "<p>CPF: $cpf</p>";
             echo "<p>Email: $email</p>";
             echo "<p>Valor do Crédito Pretendido: R$ " . number_format($credito, 2, ',', '.') . "</p>";
-            
-            // Calcular e exibir os valores das parcelas para diferentes prazos
-            $parcelas_12 = ($valorTotal * 1.02) / 12;
-            $parcelas_18 = ($valorTotal * 1.03) / 18;
-            $parcelas_24 = ($valorTotal * 1.04) / 24;
-            $parcelas_30 = ($valorTotal * 1.05) / 30;
-            $parcelas_36 = ($valorTotal * 1.06) / 36;
+            echo "<p>Valor da Renda atual: R$ " . number_format($renda, 2, ',', '.') . "</p>";
 
-            echo "<h2>Opções de Parcelamento:</h2>";
-            echo "<p>12 parcelas (2% de juros): R$ " . number_format($parcelas_12, 2, ',', '.') . " por mês</p>";
-            echo "<p>18 parcelas (3% de juros): R$ " . number_format($parcelas_18, 2, ',', '.') . " por mês</p>";
-            echo "<p>24 parcelas (4% de juros): R$ " . number_format($parcelas_24, 2, ',', '.') . " por mês</p>";
-            echo "<p>30 parcelas (5% de juros): R$ " . number_format($parcelas_30, 2, ',', '.') . " por mês</p>";
-            echo "<p>36 parcelas (6% de juros): R$ " . number_format($parcelas_36, 2, ',', '.') . " por mês</p>";
+            // Conectar ao banco de dados usando prepared statement
+            $conn = new mysqli('localhost', 'root', '', 'formulario');
+
+            // Verificar a conexão
+            if ($conn->connect_error) {
+                die("Conexão falhou: " . $conn->connect_error);
+            }
+
+            // Inserir dados no banco de dados usando prepared statement
+            $stmt = $conn->prepare("INSERT INTO clientes_formulario (nome, telefone, cpf, email, credito, renda) VALUES (?, ?, ?, ?, ?, ?)");
+            $stmt->bind_param("ssssdd", $nome, $telefone, $cpf, $email, $credito, $renda);
+
+            if ($stmt->execute()) {
+                echo "<p>Dados inseridos com sucesso no banco de dados.</p>";
+
+                // Calcular e exibir os valores das parcelas para diferentes prazos
+                $parcelas_12 = ($valorTotal * 1.02) / 12;
+                $parcelas_18 = ($valorTotal * 1.03) / 18;
+                $parcelas_24 = ($valorTotal * 1.04) / 24;
+                $parcelas_30 = ($valorTotal * 1.05) / 30;
+                $parcelas_36 = ($valorTotal * 1.06) / 36;
+
+                echo "<h2>Opções de Parcelamento:</h2>";
+                echo "<p>12 parcelas (2% de juros): R$ " . number_format($parcelas_12, 2, ',', '.') . " por mês</p>";
+                echo "<p>18 parcelas (3% de juros): R$ " . number_format($parcelas_18, 2, ',', '.') . " por mês</p>";
+                echo "<p>24 parcelas (4% de juros): R$ " . number_format($parcelas_24, 2, ',', '.') . " por mês</p>";
+                echo "<p>30 parcelas (5% de juros): R$ " . number_format($parcelas_30, 2, ',', '.') . " por mês</p>";
+                echo "<p>36 parcelas (6% de juros): R$ " . number_format($parcelas_36, 2, ',', '.') . " por mês</p>";
+            } else {
+                echo "Erro ao inserir dados: " . $stmt->error;
+            }
+
+            // Fechar a conexão com o banco de dados
+            $stmt->close();
+            $conn->close();
         }
         ?>
     </div>

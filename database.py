@@ -6,7 +6,7 @@ conn = mysql.connector.connect(
     host='localhost',
     user='root',
     password='',
-    database='aplicacao_web'
+    database='formulario'
 )
 cursor = conn.cursor()
 
@@ -32,7 +32,7 @@ renda = 500.00
 cursor.execute('INSERT INTO formulario (nome, telefone, cpf, email, credito, renda) VALUES (%s, %s, %s, %s, %s, %s)',
                (nome, telefone, cpf, email, credito, renda))
 
-# Para o commit e fechar a conexão com o banco de dados
+# Para o commit e fecha a conexão com o banco de dados
 conn.commit()
 conn.close()
 
@@ -41,7 +41,7 @@ conn = mysql.connector.connect(
     host='localhost',
     user='root',
     password='',
-    database='aplicacao_web'
+    database='formulario'
 )
 cursor = conn.cursor()
 
